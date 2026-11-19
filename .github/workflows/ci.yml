@@ -23,6 +23,30 @@ jobs:
         run: cd backend && ./gradlew checkstyleMain
       - name: Run Tests
         run: cd backend && ./gradlew test
+      - name: Generate JaCoCo Report
+        run: cd backend && ./gradlew jacocoTestReport
+      - name: Debug - List Reports Directory
+        run: ls -la backend/build/reports/jacoco/test/html/ || echo "Папка не найдена!"
+      - name: Upload JaCoCo Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: backend/build/reports/jacoco/test/html/
+      - name: Check JaCoCo Report
+        run: |
+          if [ -d "backend/build/reports/jacoco/test/html" ]; then
+            echo "Папка с отчетом найдена"
+            ls -la backend/build/reports/jacoco/test/html/
+          else
+            echo "ОШИБКА: Папка с отчетом НЕ найдена"
+            exit 1
+          fi
+      
+      - name: Upload JaCoCo Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: backend/build/reports/jacoco/test/html/
 
   # 2. Проверка фронтенда (React)
   frontend-lint-and-test:
