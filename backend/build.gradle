@@ -31,7 +31,6 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// ЕДИНЫЙ блок для тестов
 tasks.named('test') {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport // Отчет создастся сразу после тестов
@@ -43,9 +42,11 @@ jacoco {
 
 jacocoTestReport {
 	dependsOn test
+	dependsOn test
 	reports {
 		xml.required = true
-		csv.required = false
+		csv.required = true
+        csv.outputLocation = file("$buildDir/reports/jacoco/test/jacocoTestReport.csv") 
 		html.required = true
 		html.outputLocation = layout.buildDirectory.dir('reports/jacoco/test/html')
 	}
