@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.3.5' // Стабильная версия!
+	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id 'checkstyle'
 	id 'jacoco'
@@ -22,18 +22,18 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web' // Стандартное имя
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test' // Один стартер для всех тестов
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
-	finalizedBy jacocoTestReport // Отчет создастся сразу после тестов
+	finalizedBy jacocoTestReport
 }
 
 jacoco {
@@ -42,13 +42,10 @@ jacoco {
 
 jacocoTestReport {
 	dependsOn test
-	dependsOn test
 	reports {
 		xml.required = true
 		csv.required = true
-        csv.outputLocation = file("$buildDir/reports/jacoco/test/jacocoTestReport.csv") 
-		html.required = true
-		html.outputLocation = layout.buildDirectory.dir('reports/jacoco/test/html')
+		html.required = false // HTML не нужен, только CSV для метрик
 	}
 }
 
