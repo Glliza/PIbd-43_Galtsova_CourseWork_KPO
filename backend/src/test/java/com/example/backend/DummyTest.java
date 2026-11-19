@@ -1,12 +1,12 @@
 package com.example.backend;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DummyTest {
-
     @Test
-    void simpleTest() {
-        assertTrue(true);
+    void contextLoads() {
+        BackendApplication app = new BackendApplication();
+        assertNotNull(app);
     }
 }
