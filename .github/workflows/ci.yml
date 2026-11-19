@@ -7,7 +7,6 @@ on:
     branches: [ main ]
 
 jobs:
-  # 1. Проверка бэкенда (Java)
   backend-lint-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -21,34 +20,18 @@ jobs:
         run: chmod +x backend/gradlew
       - name: Run Checkstyle (Linter)
         run: cd backend && ./gradlew checkstyleMain
-      - name: Run Tests
-        run: cd backend && ./gradlew test
-      - name: Generate JaCoCo Report
-        run: cd backend && ./gradlew jacocoTestReport
-      - name: Debug - List Reports Directory
-        run: ls -la backend/build/reports/jacoco/test/html/ || echo "Папка не найдена!"
-      - name: Upload JaCoCo Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: backend/build/reports/jacoco/test/html/
-      - name: Check JaCoCo Report
-        run: |
-          if [ -d "backend/build/reports/jacoco/test/html" ]; then
-            echo "Папка с отчетом найдена"
-            ls -la backend/build/reports/jacoco/test/html/
-          else
-            echo "ОШИБКА: Папка с отчетом НЕ найдена"
-            exit 1
-          fi
       
+      # ЗАПУСКАЕМ ТЕСТЫ И ОТЧЕТ ОДНОЙ КОМАНДОЙ
+      - name: Run Tests and Generate JaCoCo Report
+        run: cd backend && ./gradlew test jacocoTestReport
+      
+      # ЗАГРУЖАЕМ АРТЕФАКТ (теперь путь 100% правильный)
       - name: Upload JaCoCo Report
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: backend/build/reports/jacoco/test/html/
 
-  # 2. Проверка фронтенда (React)
   frontend-lint-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -63,10 +46,9 @@ jobs:
         run: cd frontend && npx eslint src
       - name: Check Prettier formatting
         run: cd frontend && npx prettier --check src
-      - name: Run Tests (если они есть)
+      - name: Run Tests
         run: cd frontend && npm test -- --watchAll=false || echo "No tests yet"
 
-  # 3. Сборка проекта
   build:
     needs: [backend-lint-and-test, frontend-lint-and-test]
     runs-on: ubuntu-latest
